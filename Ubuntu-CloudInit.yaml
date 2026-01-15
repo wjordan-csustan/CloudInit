@@ -1,0 +1,13 @@
+#cloud-config
+vendor_data: {enabled: false}
+keyboard:
+  layout: us
+locale: en_US.UTF-8
+timezone: America/Los_Angeles
+
+disable_root: true
+
+ubuntu_pro:
+  features: {disable_auto_attach: true}
+  enable: []
+  enable_beta: []
