@@ -6,8 +6,56 @@ locale: en_US.UTF-8
 timezone: America/Los_Angeles
 
 disable_root: true
+ssh_pwauth: false
 
+
+# disable all Ubuntu Pro features
 ubuntu_pro:
   features: {disable_auto_attach: true}
   enable: []
   enable_beta: []
+
+prefer_fqdn_over_hostname: false
+
+users:
+  - name: ansible
+    sudo: "ALL=(ALL) NOPASSWD:ALL"
+    shell: /bin/bash
+    lock_passwd: true
+    ssh_authorized_keys:
+      -
+
+ansible:
+  package_name: ansible-core
+  install_method: distro
+  run_user: ansible
+  pull:
+    - url: https://github.com/wjordan-csustan/ansible.git
+      playbook_names: 
+        - ubuntu.yml # eventually this will be replaced with the server-specific playbook
+
+ntp:
+  enabled: true
+  servers:
+    - time.csustan.edu
+  pools: 
+    - 0.us.pool.ntp.org
+    - 1.us.pool.ntp.org
+    - 2.us.pool.ntp.org
+    - 3.us.pool.ntp.org
+
+network:
+  version: 2
+  ethernets:
+    id0:
+      match: 
+        name: eth*
+      addresses:
+        - 10.168.45.99/24 # THIS SHOULD BE CHANGED TO MATCH SERVER
+      gateway4: 10.168.45.1
+      nameservers:
+        search: 
+          - csustan.edu
+        addresses:
+          - 10.168.73.31
+          - 10.168.76.32
