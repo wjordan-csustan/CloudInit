@@ -6,6 +6,16 @@ keyboard:
 locale: en_US.UTF-8
 timezone: America/Los_Angeles
 
+prefer_fqdn_over_hostname: false
+hostname: oit-cinit-sta # SET HOSTNAME HERE
+
+# Force default partition to use all available space (default in Ubuntu is .5x available space for default LVM, don't force Growpart for LVM)
+resize_rootfs: true
+growpart:
+  devices: [/]
+  ignore_growroot_disabled: false
+  mode: auto
+
 network:
   version: 2
   ethernets:
@@ -41,7 +51,7 @@ ubuntu_pro:
   enable: []
   enable_beta: []
 
-prefer_fqdn_over_hostname: false
+
 
 users:
   - name: ansible
