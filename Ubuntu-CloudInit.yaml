@@ -1,13 +1,39 @@
 #cloud-config
 vendor_data: {enabled: false}
+
 keyboard:
   layout: us
 locale: en_US.UTF-8
 timezone: America/Los_Angeles
 
+network:
+  version: 2
+  ethernets:
+    id0:
+      match: 
+        name: eth*
+      addresses:
+        - 10.168.45.99/24 # THIS SHOULD BE CHANGED TO MATCH SERVER
+      gateway4: 10.168.45.1 # MATCH THIS TO ABOVE SUBNET
+      nameservers:
+        search: 
+          - csustan.edu
+        addresses:
+          - 10.168.73.31
+          - 10.168.76.32
+
+ntp:
+  enabled: true
+  servers:
+    - time.csustan.edu
+  pools: 
+    - 0.us.pool.ntp.org
+    - 1.us.pool.ntp.org
+    - 2.us.pool.ntp.org
+    - 3.us.pool.ntp.org
+
 disable_root: true
 ssh_pwauth: false
-
 
 # disable all Ubuntu Pro features
 ubuntu_pro:
@@ -34,28 +60,5 @@ ansible:
       playbook_names: 
         - ubuntu.yml # eventually this will be replaced with the server-specific playbook
 
-ntp:
-  enabled: true
-  servers:
-    - time.csustan.edu
-  pools: 
-    - 0.us.pool.ntp.org
-    - 1.us.pool.ntp.org
-    - 2.us.pool.ntp.org
-    - 3.us.pool.ntp.org
 
-network:
-  version: 2
-  ethernets:
-    id0:
-      match: 
-        name: eth*
-      addresses:
-        - 10.168.45.99/24 # THIS SHOULD BE CHANGED TO MATCH SERVER
-      gateway4: 10.168.45.1
-      nameservers:
-        search: 
-          - csustan.edu
-        addresses:
-          - 10.168.73.31
-          - 10.168.76.32
+
