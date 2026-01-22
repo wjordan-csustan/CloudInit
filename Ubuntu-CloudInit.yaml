@@ -51,8 +51,6 @@ ubuntu_pro:
   enable: []
   enable_beta: []
 
-
-
 users:
   - name: ansible
     sudo: "ALL=(ALL) NOPASSWD:ALL"
