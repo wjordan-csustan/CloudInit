@@ -57,7 +57,7 @@ users:
     shell: /bin/bash
     lock_passwd: true
     ssh_authorized_keys:
-      -
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDqhiget/MhesJ1/t2t4x9Mgv8Hd1wJAFJH5HOrmPyg+gVkhN9Yo3hwLLRXXsevXRN9J15RAl+R/BPUJVspRmUMbS4sL+t8cjfyyX7E28RC6VxwmPMoAcpbD5FdXoh27NOxCs7WzUIZcm691g4CqkuL+YnBd0mNniB6R98IXPCAn1BPxU8EvJUBgQVQoPSSCcjmhrV2AKKzUvgDh0zXbz/kvvSv/A9KHw3Uw3CcC1RJ8zJmnRgrCxhunJKiSLugrYB1LYnke3duCPrZGne/ft5wuW6msNV5RCPv92m+Ceaza8e5v5zzLw6iSKRKKdqbLm+EqbbAGsiYnT5KwZIhuI4AukM2/tgnDWOCdaN0W18gOjdMVyQ3ijhJfZcfKAXVz8RG93eXcG0oW6k5or/pRo/rtQaX5+C4XEFLBncDot8d4KySXthzO566h0pKd9RMsWSyv0HbWsP2ZSyhobEPm0QU530zZxhMGHBQOmYbZk49NN6IxSM5+C5Yts71MQTF4snc19zKy91SoGtij6zCIgwzYDZdpj2mmGIo8R6kySuO3P2B8YQF83/c3bYPBHQmu7bmn+HmqAKUpl2GdHaTM0r337XMjudDaBodz6QnuCRT77mYP+CS38d6d6o5yVUXXiVg1JpPtKaN3UjdFYexzkh0+J2/70csDOIweoY9wpa/XQ== wjordan-ssh-key-2025 PIV
 
 ansible:
   package_name: ansible-core
