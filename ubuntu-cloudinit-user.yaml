@@ -66,8 +66,13 @@ runcmd:
   - "curl -H 'X-Key: 022b632e0738696d5f7dea65483d2b6ff5ec578aaf51cb6f4feed039838987e7' 'https://sensor.cloud.tenable.com/install/agent?groups=Linux' | bash" # Tenable
   - "wget -N 'https://api-cloudstation-us-east-2.prod.hydra.sophos.com/api/download/97fdab6fd5a1fe54c13cb28ac7904561/SophosSetup.sh'" # Taegis/Sophos
   - chmod +x ./SophosSetup.sh 
-  - [sh, -c, "SophosSetup.sh --group=Linux"]
+  - [sh, -c, "./SophosSetup.sh --group=Linux"]
   - rm -f ./SophosSetup.sh
+
+power_state:
+  mode: reboot
+  message: "Provisioning complete - rebooting"
+  timeout: 15
   
 # ansible:
 #   package_name: ansible-core
