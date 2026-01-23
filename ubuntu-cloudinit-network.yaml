@@ -1,0 +1,16 @@
+#cloud-config
+network:
+  version: 2
+  ethernets:
+    id0:
+      match: 
+        name: eth*
+      addresses:
+        - 10.168.45.99/24 # THIS SHOULD BE CHANGED TO MATCH SERVER
+      gateway4: 10.168.45.1 # MATCH THIS TO ABOVE SUBNET
+      nameservers:
+        search: 
+          - csustan.edu
+        addresses:
+          - 10.168.73.31
+          - 10.168.76.32
