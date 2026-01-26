@@ -29,8 +29,6 @@ ssh_pwauth: false
 # disable all Ubuntu Pro features
 ubuntu_pro:
   features: {disable_auto_attach: true}
-  enable: []
-  enable_beta: []
 
 users:
   - name: ansible
@@ -39,6 +37,24 @@ users:
     lock_passwd: true
     ssh_authorized_keys:
       - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDqhiget/MhesJ1/t2t4x9Mgv8Hd1wJAFJH5HOrmPyg+gVkhN9Yo3hwLLRXXsevXRN9J15RAl+R/BPUJVspRmUMbS4sL+t8cjfyyX7E28RC6VxwmPMoAcpbD5FdXoh27NOxCs7WzUIZcm691g4CqkuL+YnBd0mNniB6R98IXPCAn1BPxU8EvJUBgQVQoPSSCcjmhrV2AKKzUvgDh0zXbz/kvvSv/A9KHw3Uw3CcC1RJ8zJmnRgrCxhunJKiSLugrYB1LYnke3duCPrZGne/ft5wuW6msNV5RCPv92m+Ceaza8e5v5zzLw6iSKRKKdqbLm+EqbbAGsiYnT5KwZIhuI4AukM2/tgnDWOCdaN0W18gOjdMVyQ3ijhJfZcfKAXVz8RG93eXcG0oW6k5or/pRo/rtQaX5+C4XEFLBncDot8d4KySXthzO566h0pKd9RMsWSyv0HbWsP2ZSyhobEPm0QU530zZxhMGHBQOmYbZk49NN6IxSM5+C5Yts71MQTF4snc19zKy91SoGtij6zCIgwzYDZdpj2mmGIo8R6kySuO3P2B8YQF83/c3bYPBHQmu7bmn+HmqAKUpl2GdHaTM0r337XMjudDaBodz6QnuCRT77mYP+CS38d6d6o5yVUXXiVg1JpPtKaN3UjdFYexzkh0+J2/70csDOIweoY9wpa/XQ== wjordan-ssh-key-2025 PIV
+
+  - name: rinman
+    groups: sudo
+    shell: /bin/bash
+    ssh_authorized_keys:
+      - ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAQEAjBuRLM/wfiF5o+jVBXdL+rsAfprbHBh+uxFPQV1w1+qTsmC8I7yBZAG+sI/2EjVtCXABBYN1CiIFG/oPS8gfVPSioK9RjO8C55vG/+Rpa5XTywNQpGl6qRLfipE61dTHvsRLBoAM72GuMoYG2Bl3NPfKtSgD9nNY1FLP9WWrGmdlrf7cSUmt/XRjru4nqRB29xIMpM/hDJKEezIfuAf5GFF3xDfzZXKrdAVN4v/uZ/QxvikolNqfFzz9ZHth+/B2nkdJ33S1UuGylvO+P0U+JA2xdGmse+3qCn/fiPa8WjEsdu/HQtkJ7uobZld8X0JkM09a9/IYDcWe4cPif+hMKw== inman@monolith
+
+  # - name: wjordan
+  #   groups: sudo
+  #   shell: /bin/bash
+  #   ssh_authorized_keys:
+  #     - 
+
+  # - name: jwnewton
+  #   groups: sudo
+  #   shell: /bin/bash
+  #   ssh_authorized_keys:
+  #     - 
 
 package_update: true
 package_upgrade: true
@@ -51,18 +67,30 @@ packages:
   - linux-azure
   - curl # required for Sophos agent
   - libcap2-bin # required for Sophos agent
+  - ca-certificates # required for LS IT Agent
+  - openssl # required for LS IT Agent
 
 runcmd:
+  # configure secure default FW options
   - ufw default deny incoming
   - ufw default allow outgoing
   - ufw allow ssh
   - ufw --force enable
+  # disable MOTD ads/ESM prompts as well as APT ESM ads
+  - sed -i -e 's,ENABLED=1,ENABLED=0,g' /etc/default/motd-news
+  - sed -Ezi.orig -e 's/(def _output_esm_service_status.outstream, have_esm_service, service_type.:\n)/\1    return\n/' -e 's/(def _output_esm_package_alert.*?\n.*?\n.:\n)/\1    return\n/' /usr/lib/update-notifier/apt_check.py
+  - /usr/lib/update-notifier/update-motd-updates-available --force
+  - pro config set apt_news=false
   # remove metadata iso
   - [ sh, -c, "if test -b /dev/cdrom; then eject; fi" ]
   - [ sh, -c, "if test -b /dev/sr0; then eject /dev/sr0; fi" ]
   # disable cloud-init from running on future boots
   - [ sh, -c, touch /etc/cloud/cloud-init.disabled ]
   # install required agents
+  - wget -O '/tmp/lsitagent.deb' 'https://download.lansweeper.com/deb-repository/stable/latest'
+  - dpkg -i /tmp/lsitagent.deb 
+  - apt update -y
+  - "env LINKING_CODE=eyJjbGllbnRJZCI6ImMxNGQyYzAyNGUzZDcxNmNiNzQ1OWRiODE4NWJmYTMzIiwiY2xpZW50U2VjcmV0IjoiVGtXdjZFNFgyMVJMRUVoUkw0UFdpM1NfekhlWU0zZGFpa0l1aktzOXduR096cjYxeFBRdC1vbWRaTmt5NXBvVSIsInNpdGVJZCI6IjU4NTAyOGQyLTEwZjItNGNlZi04YjI4LTg4MTNmOTg2MWJiZiIsInNpdGVOYW1lIjoic3RhbnN0YXRlIiwiZXhwIjoiMjAyNy0wMS0yNlQyMDoyMjowNS4zMDVaIiwicmVnaW9uIjoidXMifQ== apt install lansweeper-it-agent -f -y"
   - "curl -H 'X-Key: 022b632e0738696d5f7dea65483d2b6ff5ec578aaf51cb6f4feed039838987e7' 'https://sensor.cloud.tenable.com/install/agent?groups=Linux' | bash" # Tenable
   - "wget -N 'https://api-cloudstation-us-east-2.prod.hydra.sophos.com/api/download/97fdab6fd5a1fe54c13cb28ac7904561/SophosSetup.sh'" # Taegis/Sophos
   - chmod +x ./SophosSetup.sh 
@@ -73,7 +101,7 @@ power_state:
   mode: reboot
   message: "Provisioning complete - rebooting"
   timeout: 15
-  
+
 # ansible:
 #   package_name: ansible-core
 #   install_method: distro
